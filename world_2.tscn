@@ -1,0 +1,82 @@
+[gd_scene load_steps=6 format=3 uid="uid://bwip3tk43g1sr"]
+
+[ext_resource type="Script" path="res://world_2.gd" id="1_giagr"]
+[ext_resource type="PackedScene" uid="uid://y7y8rluh64qw" path="res://cat2.tscn" id="1_sa63m"]
+[ext_resource type="Script" path="res://cat_physics.gd" id="2_ee0he"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_h0qjv"]
+radius = 109.804
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_x2h3v"]
+radius = 19.0263
+
+[node name="World2" type="Node2D" node_paths=PackedStringArray("top_left", "top_right", "bottom_left", "bottom_right")]
+script = ExtResource("1_giagr")
+top_left = NodePath("CharacterBody2D/Cat2/TopLeft")
+top_right = NodePath("CharacterBody2D/Cat2/TopRight")
+bottom_left = NodePath("CharacterBody2D/Cat2/BottomLeft")
+bottom_right = NodePath("CharacterBody2D/Cat2/BottomRight")
+metadata/_edit_lock_ = true
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+position = Vector2(171, 67)
+platform_on_leave = 2
+script = ExtResource("2_ee0he")
+max_speed = 10
+metadata/_edit_group_ = true
+
+[node name="Cat2" parent="CharacterBody2D" node_paths=PackedStringArray("top_right_corner", "bottom_left_corner") instance=ExtResource("1_sa63m")]
+position = Vector2(0, 0)
+animation = &"hiss"
+flip_h = false
+top_right_corner = NodePath("../../TopRightCorner")
+bottom_left_corner = NodePath("../../BottomLeftCorner")
+metadata/_edit_group_ = true
+
+[node name="TopLeft" type="Marker2D" parent="CharacterBody2D/Cat2"]
+position = Vector2(-9, -0.333333)
+scale = Vector2(3, 3)
+
+[node name="BottomLeft" type="Marker2D" parent="CharacterBody2D/Cat2"]
+position = Vector2(-9, 17)
+scale = Vector2(3, 3)
+
+[node name="TopRight" type="Marker2D" parent="CharacterBody2D/Cat2"]
+position = Vector2(9, -0.333333)
+scale = Vector2(3, 3)
+
+[node name="BottomRight" type="Marker2D" parent="CharacterBody2D/Cat2"]
+position = Vector2(9, 17)
+scale = Vector2(3, 3)
+
+[node name="BasicTimer" type="Timer" parent="CharacterBody2D/Cat2"]
+wait_time = 3.0
+autostart = true
+
+[node name="MouseTimer" type="Timer" parent="CharacterBody2D/Cat2"]
+wait_time = 3.0
+
+[node name="Area2D" type="Area2D" parent="CharacterBody2D/Cat2"]
+position = Vector2(0, 10)
+scale = Vector2(0.333333, 0.333333)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D/Cat2/Area2D"]
+shape = SubResource("CircleShape2D_h0qjv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+position = Vector2(0, 32)
+shape = SubResource("CircleShape2D_x2h3v")
+
+[node name="BottomLeftCorner" type="Marker2D" parent="."]
+position = Vector2(0, 1080)
+metadata/_edit_lock_ = true
+
+[node name="TopRightCorner" type="Marker2D" parent="."]
+position = Vector2(1920, 0)
+metadata/_edit_lock_ = true
+
+[connection signal="velocity_change" from="CharacterBody2D/Cat2" to="CharacterBody2D" method="_on_cat_2_velocity_change"]
+[connection signal="timeout" from="CharacterBody2D/Cat2/BasicTimer" to="CharacterBody2D/Cat2" method="_on_timer_timeout"]
+[connection signal="timeout" from="CharacterBody2D/Cat2/MouseTimer" to="CharacterBody2D/Cat2" method="_on_mouse_timer_timeout"]
+[connection signal="mouse_entered" from="CharacterBody2D/Cat2/Area2D" to="CharacterBody2D/Cat2" method="_on_area_2d_mouse_entered"]
+[connection signal="mouse_exited" from="CharacterBody2D/Cat2/Area2D" to="CharacterBody2D/Cat2" method="_on_area_2d_mouse_exited"]
